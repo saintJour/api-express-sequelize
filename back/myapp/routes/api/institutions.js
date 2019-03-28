@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
-const { Institution } = require('../../models');
+const { Institution, Program } = require('../../models');
 
 router.post('/', (req, res) => {
     let data = _.pick(req.body, [
