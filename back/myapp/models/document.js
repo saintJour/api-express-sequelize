@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   Document.associate = function(models) {
     models.Document.Course = models.Document.belongsTo(models.Course);
     models.Document.DocumentTags = models.Document.hasMany(models.DocumentTag);
+    models.Document.Ratings = models.Document.hasMany(models.Rating);
   };
 
   return Document;

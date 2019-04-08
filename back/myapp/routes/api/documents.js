@@ -1,12 +1,13 @@
 const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
-const { Document, DocumentTag, Tag } = require('../../models');
+const { Document, DocumentTag, Tag, Rating } = require('../../models');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const uuidv1 = require('uuid/v1');
 const path = require('path');
 const config = require('../../local');
+const sequelize = require('sequelize');
 
 aws.config.update({
   accessKeyId: config.S3.ACCESS_KEY_ID,
@@ -49,6 +50,27 @@ router.get('/:id/tags', async (req, res) => {
     else{
         res.status(404).json({message: 'Not Found'});
     }
+});
+
+router.get('/:id/rating', (req, res) => {
+    Document.findByPk(req.params.id)
+    .then(document => {
+        if(document){
+            Rating.findAll({
+                where: {
+                    DocumentId: req.params.id
+                },
+                attributes: [[sequelize.fn('AVG', sequelize.col('value')), 'rating']],
+                group: 'DocumentId'
+            })
+            .then(record => {
+                res.status(200).json(record);
+            });
+        }
+        else{
+            res.status(404).json({message: 'Not Found'});
+        }
+    })
 });
 
 router.post('/', async (req, res) => {
