@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     year: {
       type: DataTypes.INTEGER
     },
+    rating: {
+      type: DataTypes.DECIMAL(10,2)
+    },
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING)
+    },
     key: {
       type: DataTypes.STRING
     },

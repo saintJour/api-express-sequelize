@@ -34,6 +34,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      rating: {
+        type: Sequelize.DECIMAL(10,2)
+      },
+      tags: {
+        type: Sequelize.ARRAY(Sequelize.STRING)
+      },
       key: {
         type: Sequelize.STRING
       },

@@ -36,41 +36,43 @@ router.get('/:id', (req, res) => {
     .catch(e => res.status(500).json());
 });
 
-router.get('/:id/tags', async (req, res) => {
-    let tags = [];
-    let document = await Document.findByPk(req.params.id);
-    if(document){
-        let doctags = await document.getDocumentTags();
-        for(let doctag of doctags) {
-            let tag = await doctag.getTag();
-            tags.push(tag.name);
-        }
-        res.status(200).json(tags);
-    }
-    else{
-        res.status(404).json({message: 'Not Found'});
-    }
-});
+router.put('/:id', async (req, res) => {
+    let data = _.pick(req.body, [
+        'CourseId',
+        'name', 
+        'description',
+        'type',
+        'year',
+        'tags'
+    ]);
 
-router.get('/:id/rating', (req, res) => {
-    Document.findByPk(req.params.id)
-    .then(document => {
+    try{
+        if(data.tags){
+            for(let tag of data.tags){
+                let tagFound = await Tag.findOne({
+                    where: {
+                        name: tag
+                    }
+                });
+                if(!tagFound){
+                    await Tag.create({
+                        name: tag
+                    });
+                }
+            }    
+        }
+        let document = await Document.findByPk(req.params.id);
         if(document){
-            Rating.findAll({
-                where: {
-                    DocumentId: req.params.id
-                },
-                attributes: [[sequelize.fn('AVG', sequelize.col('value')), 'rating']],
-                group: 'DocumentId'
-            })
-            .then(record => {
-                res.status(200).json(record);
-            });
+            await document.update(data);
+            res.status(200).json(document);
         }
         else{
             res.status(404).json({message: 'Not Found'});
         }
-    })
+    }
+    catch(e){
+        res.status(500).json({message: 'Failed to edit document'});
+    }
 });
 
 router.post('/', async (req, res) => {
@@ -95,72 +97,66 @@ router.post('/', async (req, res) => {
         return res.status(400).json({message: 'Document year not provided'});
     }
 
-    let document = await Document.create({
-        CourseId: req.query.CourseId,
-        name: req.query.name,
-        description: req.query.description,
-        type: req.query.type,
-        year: req.query.year
-    });
-
-    let upload = multer({
-        storage: multerS3({
-            s3: s3,
-            bucket: config.S3.BUCKET_NAME,
-            metadata: function(req, file, cb) {
-                cb(null, { document: file.fieldname });
-            },
-            key: function(req, file, cb) {
-                cb(null, 'documents/' + uuidv1() + path.extname(file.originalname));
-            }
-        }),
-        fileFilter: function(req, file, callback) {
-            let ext = path.extname(file.originalname);
-            if (ext !== '.pdf' && ext !== '.doc' && ext !== '.docx') {
-              return callback(new Error('Only documents are allowed'));
-            }
-            callback(null, true);
-        },
-        limits: { fileSize: 10 * 1024 * 1024 }
-    }).single('document');
-
-    upload(req, res, async function(err) {
-        if (err) {
-            await document.destroy();
-            res.status(400).json();
-        } else {
-            await document.update({ key: req.file.key })
-            let tags = req.query.tags;
-            tags = [ ...new Set(tags) ];
-            console.log(tags);
-            for(let tag of tags){
-                let tagFound = await Tag.findOne({
-                    where: {
-                        name: tag
-                    }
-                });
-                if(tagFound){
-                    await DocumentTag.create({
-                        DocumentId: document.id,
-                        TagId: tagFound.id
-                    });
-                }
-                else{
-                    let newTag = await Tag.create({
-                        name: tag
-                    });
-                    await DocumentTag.create({
-                        DocumentId: document.id,
-                        TagId: newTag.id
-                    });
-                }
-            }
-            res.status(201).json(document);
-        }
-    });
-
-
+    try{
+        let document = await Document.create({
+            CourseId: req.query.CourseId,
+            name: req.query.name,
+            description: req.query.description,
+            type: req.query.type,
+            year: req.query.year
+        });
     
+        let upload = multer({
+            storage: multerS3({
+                s3: s3,
+                bucket: config.S3.BUCKET_NAME,
+                metadata: function(req, file, cb) {
+                    cb(null, { document: file.fieldname });
+                },
+                key: function(req, file, cb) {
+                    cb(null, 'documents/' + uuidv1() + path.extname(file.originalname));
+                }
+            }),
+            fileFilter: function(req, file, callback) {
+                let ext = path.extname(file.originalname);
+                if (ext !== '.pdf' && ext !== '.doc' && ext !== '.docx') {
+                  return callback(new Error('Only documents are allowed'));
+                }
+                callback(null, true);
+            },
+            limits: { fileSize: 10 * 1024 * 1024 }
+        }).single('document');
+    
+        upload(req, res, async function(err) {
+            if (err) {
+                await document.destroy();
+                res.status(400).json();
+            } else {
+                await document.update({ key: req.file.key });
+                let tags = req.query.tags;
+                let queryTags = [ ...new Set(tags) ];
+                await document.update({
+                    tags: queryTags
+                });
+                for(let tag of queryTags){
+                    let tagFound = await Tag.findOne({
+                        where: {
+                            name: tag
+                        }
+                    });
+                    if(!tagFound){
+                        await Tag.create({
+                            name: tag
+                        });
+                    }
+                }
+                res.status(201).json(document);
+            }
+        });
+    }
+    catch(e){
+        res.status(500).json({message: 'Failed to upload document'});
+    }
 });
 
 module.exports = router;
