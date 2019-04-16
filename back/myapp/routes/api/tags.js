@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
     ]);
 
     if(_.isEmpty(data)){
-        res.status(400). json({message: 'Tag data not provided'});
+        res.status(400).json({message: 'Tag data not provided'});
     }
 
     if(!data.name){

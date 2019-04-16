@@ -8,11 +8,11 @@ router.post('/', (req, res) => {
     ]);
 
     if(_.isEmpty(data)){
-        res.status(400). json({message: 'Semester data not provided'});
+        return res.status(400). json({message: 'Semester data not provided'});
     }
 
     if(!data.name){
-        res.status(400).json({message: 'Semester name not provided'});
+        return res.status(400).json({message: 'Semester name not provided'});
     }
 
     data.ProgramId = req.params.ProgramId;

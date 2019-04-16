@@ -9,15 +9,15 @@ router.post('/', async (req, res) => {
     ]);
 
     if(_.isEmpty(data)){
-        res.status(400). json({message: 'Rating data not provided'});
+        return res.status(400). json({message: 'Rating data not provided'});
     }
 
     if(!data.DocumentId){
-        res.status(400).json({message: 'Rating DocumentId not provided'});
+        return res.status(400).json({message: 'Rating DocumentId not provided'});
     }
 
     if(!data.value){
-        res.status(400).json({message: 'Rating value not provided'});
+        return res.status(400).json({message: 'Rating value not provided'});
     }
 
     try{

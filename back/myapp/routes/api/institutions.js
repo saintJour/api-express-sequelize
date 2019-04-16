@@ -8,11 +8,11 @@ router.post('/', (req, res) => {
     ]);
 
     if(_.isEmpty(data)){
-        res.status(400). json({message: 'Institution data not provided'});
+        return res.status(400). json({message: 'Institution data not provided'});
     }
 
     if(!data.name){
-        res.status(400).json({message: 'Institution name not provided'});
+        return res.status(400).json({message: 'Institution name not provided'});
     }
 
     Institution.create(data)
