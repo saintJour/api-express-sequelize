@@ -7,6 +7,7 @@ const documents = require('./documents');
 const tags = require('./tags');
 const ratings = require('./ratings');
 const search = require('./search');
+const register = require('./register');
 
 router.use('/v1/institutions', institutions);
 router.use('/v1/institutions/:InstitutionId/programs', programs);
@@ -16,6 +17,6 @@ router.use('/v1/documents', documents);
 router.use('/v1/tags', tags);
 router.use('/v1/ratings', ratings);
 router.use('/v1/search', search);
-
+router.use('/v1/register', register);
 
 module.exports = router;

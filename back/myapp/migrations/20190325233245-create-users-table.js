@@ -2,54 +2,53 @@
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
-    return queryInterface.createTable('Documents', {
+    return queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      CourseId: {
-        allowNull: false,
+      ProgramId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Courses',
+          model: 'Programs',
           key: 'id'
         },
-        onDelete: 'cascade'
+        onDelete: 'set null'
       },
-      name: {
+      firstName: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      description: {
+      lastName: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      type: {
+      email: {
         allowNull: false,
-        type: Sequelize.ENUM('note', 'book', 'test', 'exam')
+        type: Sequelize.STRING,
+        unique: true
       },
-      year: {
+      password: {
         allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      rating: {
-        type: Sequelize.DECIMAL(10,2)
-      },
-      tags: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      key: {
         type: Sequelize.STRING
       },
-      thumbnailKey: {
+      verified: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      role: {
+        allowNull: false,
+        type: Sequelize.ENUM('normal', 'admin'),
+        defaultValue: 'normal'
+      },
+      avatar: {
         type: Sequelize.STRING
       },
-      approved: {
-        allowNull: false,
-        defaultValue: false,
-        type: Sequelize.BOOLEAN
+      emailToken: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -62,6 +61,6 @@ module.exports = {
     });
   },
   down: function (queryInterface, Sequelize) {
-    return queryInterface.dropTable('Documents');
+    return queryInterface.dropTable('Users');
   }
 };

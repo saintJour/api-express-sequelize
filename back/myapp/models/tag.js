@@ -6,10 +6,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Tag.associate = function(models) {
-    models.Tag.DocumentTags = models.Tag.hasMany(models.DocumentTag);
-  };
-
   return Tag;
 
 };

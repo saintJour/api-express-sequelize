@@ -76,8 +76,6 @@ router.get('/filter', async (req, res, next) => {
         }
     }
     else{
-        console.log('SALTOOOOOO');
-        console.log(data.tags);
         next();
     }   
 });

@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   Program.associate = function(models) {
     models.Program.Institution = models.Program.belongsTo(models.Institution);
     models.Program.Semesters = models.Program.hasMany(models.Semester);
+    models.Program.Users = models.Program.hasMany(models.User);
   };
 
   return Program;
