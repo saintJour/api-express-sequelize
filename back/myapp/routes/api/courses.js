@@ -1,8 +1,8 @@
 const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
-const { Course } = require('../../models');
+const { Course, Document } = require('../../models');
 
-router.post('/', (req, res) => {
+/* router.post('/', (req, res) => {
     let data = _.pick(req.body, [
         'name'
     ]);
@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
         res.status(201).json(record);
     })
     .catch(e => res.status(500).json());
-});
+}); */
 
 router.get('/', (req, res) => {
     Course.findAll({
@@ -48,7 +48,27 @@ router.get('/:id', (req, res) => {
     .catch(e => res.status(500).json());
 });
 
-router.delete('/:id', (req, res) => {
+router.get('/:id/documents', (req, res) => {
+    Course.findByPk(req.params.id)
+    .then(record => {
+      if (record) {
+        Document.findAll({
+            where: {
+                CourseId: req.params.id
+            }
+        })
+        .then(docs => {
+            res.status(200).json(docs);
+        })
+        .catch(e => res.status(500).json());
+      } else {
+        res.status(404).json({message: 'Not Found'});
+      }
+    })
+    .catch(e => res.status(500).json());
+});
+
+/* router.delete('/:id', (req, res) => {
     Course.findByPk(req.params.id)
     .then(record => {
         if(record) {
@@ -62,6 +82,6 @@ router.delete('/:id', (req, res) => {
         }
     })
     .catch(e => res.status(500).json());
-});
+}); */
 
 module.exports = router;

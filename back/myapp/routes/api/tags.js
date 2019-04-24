@@ -2,7 +2,7 @@ const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
 const { Tag } = require('../../models');
 
-router.post('/', (req, res) => {
+/* router.post('/', (req, res) => {
     let data = _.pick(req.body, [
         'name'
     ]);
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
         res.status(201).json(record);
     })
     .catch(e => res.status(500).json());
-});
+}); */
 
 router.get('/', (req, res) => {
     Tag.findAll()

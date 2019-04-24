@@ -2,7 +2,7 @@ const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
 const { Program } = require('../../models');
 
-router.post('/', (req, res) => {
+/* router.post('/', (req, res) => {
     let data = _.pick(req.body, [
         'name'
     ]);
@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
         res.status(201).json(record);
     })
     .catch(e => res.status(500).json());
-});
+}); */
 
 router.get('/', (req, res) => {
     Program.findAll({
@@ -48,7 +48,7 @@ router.get('/:id', (req, res) => {
     .catch(e => res.status(500).json());
 });
 
-router.delete('/:id', (req, res) => {
+/* router.delete('/:id', (req, res) => {
     Program.findByPk(req.params.id)
     .then(record => {
         if(record) {
@@ -62,6 +62,6 @@ router.delete('/:id', (req, res) => {
         }
     })
     .catch(e => res.status(500).json());
-});
+}); */
 
 module.exports = router;

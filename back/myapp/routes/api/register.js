@@ -69,8 +69,6 @@ router.get('/verify', async (req, res) => {
 
         let email =  await cryptr.decrypt(req.query.emailToken);
 
-        console.log("EMAIL", email);
-
         let user = await User.findOne({
             where: {
                 email: email
@@ -91,7 +89,5 @@ router.get('/verify', async (req, res) => {
         res.status(500).json(e);
     }   
 });
-
-
 
 module.exports = router;
