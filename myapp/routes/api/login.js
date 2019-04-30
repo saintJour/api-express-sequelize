@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
                                 res.status(500).json();
                             }
                             else{
-                                res.status(200).json({token: token});
+                                res.status(200).json(token);
                             }
                         });
                     }
