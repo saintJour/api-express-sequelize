@@ -2,7 +2,7 @@ const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
 const { Semester } = require('../../models');
 
-/* router.post('/', (req, res) => {
+router.post('/', (req, res) => {
     let data = _.pick(req.body, [
         'name'
     ]);
@@ -22,7 +22,7 @@ const { Semester } = require('../../models');
         res.status(201).json(record);
     })
     .catch(e => res.status(500).json());
-}); */
+});
 
 router.get('/', (req, res) => {
     Semester.findAll({
