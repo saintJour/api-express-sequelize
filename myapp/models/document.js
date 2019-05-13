@@ -1,4 +1,7 @@
 'use strict';
+
+const config = require('../local');
+
 module.exports = (sequelize, DataTypes) => {
   const Document = sequelize.define('Document', {
     name: {
@@ -27,6 +30,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     approved: {
       type: DataTypes.BOOLEAN
+    },
+    url: {
+      type: DataTypes.VIRTUAL,
+      defaultValue: null,
+      get: function(){
+        return config.DOCS_URL + this.get('key');
+      } 
     }
   });
 

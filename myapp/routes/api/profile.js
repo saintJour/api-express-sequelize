@@ -109,25 +109,28 @@ router.post('/documents', async (req, res) => {
         upload(req, res, async function(err) {
             if (err) {
                 await document.destroy();
+                console.log(err);
                 res.status(400).json();
             } else {
                 await document.update({ key: req.file.key });
-                let tags = req.query.tags;
-                tags = tags.map(a => a.toLowerCase());
-                let queryTags = [ ...new Set(tags) ];
-                await document.update({
-                    tags: queryTags
-                });
-                for(let tag of queryTags){
-                    let tagFound = await Tag.findOne({
-                        where: {
-                            name: tag
-                        }
+                if(req.query.tags){
+                    let tags = req.query.tags;
+                    tags = tags.map(a => a.toLowerCase());
+                    let queryTags = [ ...new Set(tags) ];
+                    await document.update({
+                        tags: queryTags
                     });
-                    if(!tagFound){
-                        await Tag.create({
-                            name: tag
+                    for(let tag of queryTags){
+                        let tagFound = await Tag.findOne({
+                            where: {
+                                name: tag
+                            }
                         });
+                        if(!tagFound){
+                            await Tag.create({
+                                name: tag
+                            });
+                        }
                     }
                 }
                 res.status(201).json(document);
