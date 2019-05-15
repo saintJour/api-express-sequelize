@@ -3,6 +3,15 @@ const router = require('express').Router({ mergeParams: true });
 const { Document} = require('../../models');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const config = require('../../local');
+const aws = require('aws-sdk');
+
+aws.config.update({
+    accessKeyId: config.S3.ACCESS_KEY_ID,
+    secretAccessKey: config.S3.SECRET_ACCESS_KEY
+});
+  
+const s3 = new aws.S3();
 
 router.get('/filter', async (req, res, next) => {
 
@@ -124,6 +133,28 @@ router.get('/:id', (req, res) => {
         }
     })
     .catch(e => res.status(500).json());
+});
+
+router.get('/:id/download', (req, res) => {
+    Document.findByPk(req.params.id)
+      .then(record => {
+        if (record) {
+          let options = {
+            Bucket: config.S3.BUCKET_NAME,
+            Key: record.key
+          };
+          res.attachment(record.key);
+          s3.getObject(options)
+            .createReadStream()
+            .on('error', function (err) {
+              return res.status(500).json();
+            })
+            .pipe(res);
+        } else {
+          return res.status(404).error('NotFound');
+        }
+      })
+      .catch(e => res.error(e));
 });
 
 
