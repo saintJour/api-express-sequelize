@@ -18,7 +18,7 @@ let sendVerificationEmail = async (email, emailToken) => {
       from: '"Apuntes" <apuntes@example.com>', 
       to: email, 
       subject: "Bienvenido a Apuntes ✔", 
-      text: "Por favor presiona el siguiente link para activar tu cuenta: http://localhost:3000/api/v1/register/verify?emailToken=" + emailToken
+      text: "Por favor presiona el siguiente link para activar tu cuenta: http://localhost:4200/verify/" + emailToken
     });
 
     console.log("Message sent: %s", info.messageId);
