@@ -54,7 +54,8 @@ router.get('/:id/documents', (req, res) => {
       if (record) {
         Document.findAll({
             where: {
-                CourseId: req.params.id
+                CourseId: req.params.id,
+                approved: true
             }
         })
         .then(docs => {

@@ -62,7 +62,8 @@ router.post('/', async (req, res) => {
                     where: {
                         name: {
                             [Op.iLike]: '%' + data.term + '%'
-                        }
+                        },
+                        approved: true
                     },
                     limit: 8
                 });
