@@ -13,7 +13,7 @@ aws.config.update({
   
 const s3 = new aws.S3();
 
-router.get('/filter', async (req, res, next) => {
+router.post('/filter', async (req, res, next) => {
 
     let data = _.pick(req.body, [
         'name',
@@ -69,7 +69,7 @@ router.get('/filter', async (req, res, next) => {
     }   
 });
 
-router.get('/filter', async (req, res) => {
+router.post('/filter', async (req, res) => {
 
     let data = _.pick(req.body, [
         'name',
