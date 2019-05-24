@@ -12,6 +12,9 @@ const login = require('./login');
 const profile = require('./profile');
 const middlewares = require('./middlewares');
 const course_info = require('./course_info');
+const program = require('./program');
+const semester = require('./semester');
+const course = require('./course');
 
 //no user account needed
 
@@ -25,6 +28,9 @@ router.use('/v1/institutions/:InstitutionId/programs', programs);
 router.use('/v1/institutions/:InstitutionId/programs/:ProgramId/semesters', semesters);
 router.use('/v1/institutions/:InstitutionId/programs/:ProgramId/semesters/:SemesterId/courses', courses);
 router.use('/v1/course_info', course_info);
+router.use('/v1/program', program);
+router.use('/v1/semester', semester);
+router.use('/v1/course', course);
 
 //user account needed
 

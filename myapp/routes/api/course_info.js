@@ -11,6 +11,7 @@ router.get('/:id', async (req, res) => {
         let institution = await Institution.findByPk(program.InstitutionId);
         data['course'] = course.name;
         data['program'] = program.name;
+        data['semester'] = semester.name;
         data['institution'] = institution.name;
         return res.status(200).json(data);
     }

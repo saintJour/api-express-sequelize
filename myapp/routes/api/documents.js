@@ -42,6 +42,7 @@ router.post('/filter', async (req, res, next) => {
         try{
             let docs = await Document.findAll({
                 where: {
+                    approved: true,
                     name: {
                         [Op.iLike]: '%' + data.name + '%'
                     },
@@ -96,6 +97,7 @@ router.post('/filter', async (req, res) => {
     try{
         let docs = await Document.findAll({
             where: {
+                approved: true,
                 name: {
                     [Op.iLike]: '%' + data.name + '%'
                 },
