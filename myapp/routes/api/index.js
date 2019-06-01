@@ -15,6 +15,7 @@ const course_info = require('./course_info');
 const program = require('./program');
 const semester = require('./semester');
 const course = require('./course');
+const admin = require('./admin');
 
 //no user account needed
 
@@ -37,9 +38,7 @@ router.use('/v1/course', course);
 router.use(middlewares.validateToken);
 router.use('/v1/profile', profile);
 router.use('/v1/ratings', ratings);
-
-//admin account needed
-
+router.use('/v1/admin', admin);
 
 
 module.exports = router;

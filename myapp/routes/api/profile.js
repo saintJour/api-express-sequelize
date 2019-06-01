@@ -114,7 +114,14 @@ router.post('/documents', async (req, res) => {
             } else {
                 await document.update({ key: req.file.key });
                 if(req.query.tags){
-                    let tags = req.query.tags;
+                    console.log("TIPO TAGS: ", typeof req.query.tags);
+                    let tags = [];
+                    if(typeof req.query.tags === 'string'){
+                        tags.push(req.query.tags);
+                    }
+                    else{
+                        tags = req.query.tags;
+                    }
                     tags = tags.map(a => a.toLowerCase());
                     let queryTags = [ ...new Set(tags) ];
                     await document.update({
@@ -132,6 +139,12 @@ router.post('/documents', async (req, res) => {
                             });
                         }
                     }
+                }
+                let currentUser = await User.findByPk(req.UserId);
+                if(currentUser.role === 'admin'){
+                    await document.update({
+                        approved: true
+                    });
                 }
                 res.status(201).json(document);
             }

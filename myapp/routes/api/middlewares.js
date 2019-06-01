@@ -27,6 +27,8 @@ let validateToken = (req, res, next) => {
     });
 }
 
+//let validateAdmin
+
 module.exports = {
     validateToken
 }
