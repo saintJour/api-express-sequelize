@@ -28,7 +28,7 @@ router.post('/', (req, res) => {
                 if(r){
                     if(user.verified){
                         jwt.sign({UserId: user.id}, config.JWT_KEY, {
-                            expiresIn: '3h'
+                            expiresIn: '5h'
                         }, (err, token) => {
                             if(err){
                                 console.log(err);

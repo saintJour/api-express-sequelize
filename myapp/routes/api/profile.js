@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
-const { User, Document, Tag } = require('../../models');
+const { User, Document, Tag, SavedDocument } = require('../../models');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const multer = require('multer');
@@ -209,8 +209,6 @@ router.put('/documents/:id', async (req, res) => {
 router.delete('/documents/:id', (req, res) => {
     
     let userId = req.UserId;
-    console.log('USER_ID', userId);
-    console.log('REQ_PARAMS_ID', req.params.id);
 
     Document.findByPk(req.params.id)
     .then(record => {
@@ -239,6 +237,55 @@ router.delete('/documents/:id', (req, res) => {
         }
     })
     .catch(e => res.status(500).json());
+});
+
+router.get('/saved_documents', async (req, res) => {
+    let savedDocs = await SavedDocument.findAll({
+        where: {
+            UserId: req.UserId
+        },
+        include: [
+            {
+                model: Document
+            }
+        ]
+    });
+    return res.status(200).json(savedDocs);
+});
+
+router.post('/saved_documents', async (req, res) => {
+    if(req.body.DocumentId){
+        let document =  await Document.findByPk(req.body.DocumentId);
+        if(document){
+            let savedDoc = await SavedDocument.create({
+                UserId: req.UserId,
+                DocumentId: req.body.DocumentId
+            });
+            return res.status(201).json(savedDoc);
+        }
+        else{
+            return res.status(404).json({message: 'Not Found'});
+        }
+    }
+    else{
+        return res.status(400).json({message: 'DocumentId not provided'});
+    }
+});
+
+router.delete('/saved_documents/:id', async (req, res) => {
+    let savedDoc = await SavedDocument.findAll({
+        where: {
+            DocumentId: req.params.id,
+            UserId: req.UserId
+        }
+    });
+    if(savedDoc.length > 0){
+        await savedDoc[0].destroy();
+        return res.status(200).json();
+    }
+    else{
+        return res.status(404).json({message: 'Not Found'});
+    }
 });
 
 module.exports = router;
