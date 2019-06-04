@@ -2,6 +2,15 @@ const _ = require('lodash');
 const router = require('express').Router({ mergeParams: true }); 
 const { Rating, Document } = require('../../models');
 
+router.get('/', async (req, res) => {
+    let ratings = await Rating.findAll({
+        where: {
+            UserId: req.UserId
+        }
+    });
+    return res.status(200).json(ratings);
+});
+
 router.post('/', async (req, res) => {
     let data = _.pick(req.body, [
         'DocumentId',

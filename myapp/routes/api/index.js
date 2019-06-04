@@ -17,7 +17,6 @@ const semester = require('./semester');
 const course = require('./course');
 const admin = require('./admin');
 
-//no user account needed
 
 router.use('/v1/register', register);
 router.use('/v1/login', login);
@@ -39,6 +38,5 @@ router.use(middlewares.validateToken);
 router.use('/v1/profile', profile);
 router.use('/v1/ratings', ratings);
 router.use('/v1/admin', admin);
-
 
 module.exports = router;
